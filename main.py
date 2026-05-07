@@ -1,19 +1,16 @@
 import streamlit as st
+from streamlit_gsheets import GSheetsConnection
+import pandas as pd
+from datetime import datetime
 
 # Configuración de la página
 st.set_page_config(page_title="Software Clínico EsSa-UOH", layout="wide")
 
-# Estilos para que parezca una ficha médica
+# Estilos médicos
 st.markdown("""
     <style>
     .main { background-color: #f8f9fa; }
     h1, h2 { color: #004a99; }
-    .stTabs [data-baseweb="tab-list"] { gap: 10px; }
-    .stTabs [data-baseweb="tab"] {
-        background-color: #e1e8f0;
-        border-radius: 4px 4px 0px 0px;
-        padding: 10px;
-    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -22,7 +19,6 @@ st.subheader("EVALUACIÓN TEÓRICA PRÁCTICA FINAL - INTERNADO APS")
 
 # --- FORMULARIO ---
 with st.container():
-    # 1. DATOS IDENTIFICACIÓN
     st.info("📌 IDENTIFICACIÓN")
     col1, col2 = st.columns(2)
     with col1:
@@ -32,12 +28,10 @@ with st.container():
         domicilio = st.text_input("Domicilio")
         interno = st.text_input("Nombre Interno Enfermería")
 
-    # 2. ENTREVISTA Y ALIMENTACIÓN
     st.info("🎙️ ENTREVISTA")
     tipo_alimentacion = st.selectbox("TIPO ALIMENTACIÓN", ["LME", "LA", "LM+LA", "COMPLEMENTARIA"])
     obs_entrevista = st.text_area("Observaciones Entrevista")
 
-    # 3. TRATAMIENTO Y PREVENCIÓN
     st.info("💊 MEDICAMENTOS Y PREVENCIÓN")
     col3, col4 = st.columns(2)
     with col3:
@@ -45,11 +39,9 @@ with st.container():
     with col4:
         vacunas = st.text_area("VACUNAS/ EXÁMENES /RADIOGRAFÍAS")
 
-    # 4. RESULTADOS E INSTRUMENTOS
     st.info("📊 INSTRUMENTOS")
     instrumentos = st.text_area("INSTRUMENTOS/RESULTADOS")
 
-    # 5. ANTROPOMETRÍA (Aquí el software calcula solo)
     st.info("📏 ANTROPOMETRÍA")
     c1, c2, c3 = st.columns(3)
     with c1:
@@ -64,7 +56,6 @@ with st.container():
     
     diag_nutricional = st.text_input("Diagnóstico Nutricional")
 
-    # 6. CIERRE
     st.info("📝 ACUERDOS Y DERIVACIONES")
     col5, col6 = st.columns(2)
     with col5:
@@ -72,7 +63,36 @@ with st.container():
     with col6:
         derivaciones = st.text_area("DERIVACIONES")
 
-# Botón para finalizar
+# --- LÓGICA DE GUARDADO REAL ---
 if st.button("💾 GUARDAR REGISTRO CLÍNICO"):
-    st.balloons()
-    st.success(f"Registro de {nombre_paciente} completado con éxito.")
+    if nombre_paciente == "":
+        st.error("Por favor, ingresa al menos el nombre del paciente.")
+    else:
+        try:
+            # Crear conexión
+            conn = st.connection("gsheets", type=GSheetsConnection)
+            
+            # Preparar los datos para enviar
+            nuevo_registro = pd.DataFrame([{
+                "Fecha": datetime.now().strftime("%d/%m/%Y %H:%M"),
+                "Paciente": nombre_paciente,
+                "Edad": edad,
+                "Interno": interno,
+                "Domicilio": domicilio,
+                "Alimentacion": tipo_alimentacion,
+                "Peso": peso,
+                "Talla": talla,
+                "Diagnostico": diag_nutricional,
+                "Indicaciones": indicaciones
+            }])
+
+            # ENVIAR A GOOGLE SHEETS
+            # (Asegúrate que tu hoja se llame "Hoja 1" o cambia el nombre aquí)
+            existentes = conn.read(worksheet="Hoja 1")
+            actualizados = pd.concat([existentes, nuevo_registro], ignore_index=True)
+            conn.update(worksheet="Hoja 1", data=actualizados)
+
+            st.balloons()
+            st.success(f"¡Registro de {nombre_paciente} guardado en Google Sheets con éxito!")
+        except Exception as e:
+            st.error(f"Error al conectar con Google Sheets: {e}")
