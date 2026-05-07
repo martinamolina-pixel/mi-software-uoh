@@ -5,74 +5,62 @@ from datetime import datetime
 # Configuración de página
 st.set_page_config(page_title="Ficha Clínica UOH", page_icon="🏥")
 
-st.title("🏥 REGISTRO CLÍNICO UOH")
+st.title("🏥 FICHA CLÍNICA UOH")
 st.write("Internado APS - Martina Molina")
 
 # --- FUNCIÓN PARA GENERAR EL PDF ---
-def crear_pdf(nombre, edad, diag, indicaciones):
+def generar_pdf(datos_paciente):
     pdf = FPDF()
     pdf.add_page()
-    
-    # Encabezado
     pdf.set_font("Arial", "B", 16)
     pdf.cell(0, 10, "FICHA DE ATENCIÓN CLÍNICA", ln=True, align="C")
-    pdf.set_font("Arial", "", 10)
-    pdf.cell(0, 10, f"Fecha: {datetime.now().strftime('%d/%m/%Y %H:%M')}", ln=True, align="R")
     pdf.ln(10)
     
-    # Cuerpo del documento
     pdf.set_font("Arial", "B", 12)
     pdf.cell(0, 10, "Datos del Paciente:", ln=True)
     pdf.set_font("Arial", "", 12)
-    pdf.cell(0, 10, f"Nombre: {nombre}", ln=True)
-    pdf.cell(0, 10, f"Edad: {edad}", ln=True)
-    pdf.ln(5)
     
-    pdf.set_font("Arial", "B", 12)
-    pdf.cell(0, 10, "Diagnóstico Nutricional:", ln=True)
-    pdf.set_font("Arial", "", 12)
-    pdf.multi_cell(0, 10, diag)
-    pdf.ln(5)
+    for clave, valor in datos_paciente.items():
+        pdf.multi_cell(0, 10, f"{clave}: {valor}")
     
-    pdf.set_font("Arial", "B", 12)
-    pdf.cell(0, 10, "Indicaciones y Acuerdos:", ln=True)
-    pdf.set_font("Arial", "", 12)
-    pdf.multi_cell(0, 10, indicaciones)
-    
-    # Pie de página (Tu firma)
     pdf.ln(20)
     pdf.cell(0, 10, "__________________________", ln=True, align="C")
-    pdf.cell(0, 10, "Interno(a) de Enfermería UOH", ln=True, align="C")
+    pdf.cell(0, 10, "Firma Interno(a)", ln=True, align="C")
     
-    return pdf.output(dest='S')
+    # Retornar los bytes del PDF
+    return pdf.output()
 
 # --- FORMULARIO ---
 with st.form("ficha_clinica"):
-    col1, col2 = st.columns(2)
-    with col1:
-        nombre = st.text_input("Nombre Completo del Paciente")
-        edad = st.text_input("Edad")
-    with col2:
-        diag = st.text_input("Diagnóstico Nutricional")
+    nombre = st.text_input("Nombre del Paciente")
+    edad = st.text_input("Edad")
+    diag = st.text_input("Diagnóstico Nutricional")
+    acuerdos = st.text_area("Acuerdos y Derivaciones")
     
-    indicaciones = st.text_area("Indicaciones, Acuerdos y Derivaciones")
-    
-    generar = st.form_submit_button("✨ GENERAR FICHA PDF")
+    submit = st.form_submit_button("📋 PREPARAR FICHA")
 
-if generar:
+if submit:
     if not nombre:
-        st.warning("Escribe el nombre del paciente.")
+        st.error("Por favor, ingresa el nombre.")
     else:
-        # Generar el archivo PDF en memoria
-        pdf_bytes = crear_pdf(nombre, edad, diag, indicaciones)
+        # Creamos un diccionario con la info
+        info = {
+            "Fecha": datetime.now().strftime("%d/%m/%Y"),
+            "Paciente": nombre,
+            "Edad": edad,
+            "Diagnóstico": diag,
+            "Acuerdos": acuerdos
+        }
         
-        st.balloons()
-        st.success(f"Ficha de {nombre} generada correctamente.")
+        # Generamos el PDF
+        pdf_output = generar_pdf(info)
         
-        # Botón para descargar el PDF
+        st.success(f"✅ Ficha de {nombre} lista para descargar")
+        
+        # EL BOTÓN DE DESCARGA: Ahora más simple
         st.download_button(
-            label="📥 DESCARGAR FICHA EN PDF",
-            data=pdf_bytes,
-            file_name=f"Ficha_{nombre.replace(' ', '_')}.pdf",
+            label="📥 DESCARGAR PDF",
+            data=bytes(pdf_output),
+            file_name=f"Ficha_{nombre}.pdf",
             mime="application/pdf"
         )
