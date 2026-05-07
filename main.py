@@ -87,8 +87,8 @@ if st.button("💾 GUARDAR REGISTRO CLÍNICO"):
             }])
 
             # ENVIAR A GOOGLE SHEETS
-            # (Asegúrate que tu hoja se llame "Hoja 1" o cambia el nombre aquí)
-            existentes = conn.read(worksheet="Hoja 1")
+            # (Asegúrate que tu hoja se llame "Datos" o cambia el nombre aquí)
+            existentes = conn.read(worksheet="Datos")
             actualizados = pd.concat([existentes, nuevo_registro], ignore_index=True)
             conn.update(worksheet="Hoja 1", data=actualizados)
 
