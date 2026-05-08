@@ -180,4 +180,4 @@ if enviar:
         except Exception as e:
             st.error(f"Error: {e}")
 
-st.markdown(f"""<div class="footer-uoh">Universidad de O'Higgins | Escuela de Salud<br>Fecha: {datetime.now().strftime('%d/%m/%Y')}</div>""", unsafe_allow_html=True)
+st.markdown(f"""<div class="footer-uoh">Centro de Habilidades Clínicas y Disciplinares | Escuela de Salud<br>Fecha: {datetime.now().strftime('%d/%m/%Y')}</div>""", unsafe_allow_html=True)
