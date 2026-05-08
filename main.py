@@ -87,6 +87,7 @@ def crear_pdf(datos):
                    f"Responsable: {datos['interno']}\nFecha: {datetime.now().strftime('%d/%m/%Y')}")
     
     agregar_seccion("II. VALORACIÓN CLÍNICA", 
+                   f"Entrevista: {datos['entr']}") 
                    f"Alimentación: {datos['tipo_alim']}\nObservaciones: {datos['obs_alim']}\n"
                    f"Medicamentos: {datos['meds']}\nExámenes/Vacunas/Radiografías: {datos['examenes']}\n"
                    f"Instrumentos: {datos['inst']}")
@@ -115,6 +116,7 @@ with st.form("formulario_clinico_uoh"):
         interno = st.text_input("Interno(a) Responsable")
 
     with tab2:
+        entr = st.text_area("Entrevista")
         tipo_alim = st.selectbox("Tipo de Alimentación", ["LME", "LA", "LM+LA", "Complementaria"])
         obs_alim = st.text_area("Observaciones Alimentación")
         meds = st.text_area("Medicamentos / Suplementos")
@@ -141,6 +143,7 @@ if enviar:
         try:
             datos = {
                 "nombre": nombre, "edad": edad, "domicilio": domicilio, "interno": interno,
+                "entr": entr,
                 "tipo_alim": tipo_alim, "obs_alim": obs_alim, "meds": meds, "examenes": examenes,
                 "inst": inst, "peso": peso, "talla": talla, "pc": pc, "pe": pe, "te": te,
                 "pt": pt, "diag": diag, "ind": ind, "der": der
