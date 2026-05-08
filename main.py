@@ -72,7 +72,7 @@ def crear_pdf(datos, tipo):
 
 # --- FORMULARIOS ---
 with st.form("formulario_clinico"):
-    t1, t_ent, t2, t3, t4 = st.tabs(["👤 ID", "💬 Entrevista", "🩺 Clínica", "📊 Antropo", "📝 Cierre"])
+    t1, t_ent, t2, t3, t4 = st.tabs(["👤 Antecedentes", "💬 Entrevista", "🩺 Clínica", "📊 Antropo", "📝 Cierre"])
 
     with t1:
         nombre = st.text_input("Nombre del Paciente")
