@@ -27,7 +27,7 @@ else:
 st.markdown("### Internado APS - Evaluación Final de Asignatura")
 
 # Selector principal
-tipo_paciente = st.selectbox("Seleccione el tipo de Registro Clínico:", ["Infantil / Adolescente", "Adulto / Adulto Mayor"])
+tipo_paciente = st.selectbox("Seleccione el tipo de Registro Clínico:", ["Pediátrico", "Adulto"])
 st.write("---")
 
 # --- CLASE PARA EL PDF PROFESIONAL ---
@@ -70,7 +70,7 @@ def crear_pdf(datos, tipo):
     # II. ENTREVISTA
     agregar_seccion("ENTREVISTA", datos['entrevista'])
     
-    if tipo == "Infantil / Adolescente":
+    if tipo == "Pediátrico":
         # Bloque Pediátrico
         agregar_seccion("TIPO ALIMENTACIÓN", f"Estado: {datos['tipo_alim']}\nObservaciones: {datos['obs_alim']}")
         agregar_seccion("MEDICAMENTOS / SUPLEMENTOS", datos['meds'])
@@ -109,7 +109,7 @@ with st.form("registro_maestro"):
         entrevista = st.text_area("Entrevista", height=200)
 
     with t3:
-        if tipo_paciente == "Infantil / Adolescente":
+        if tipo_paciente == "Pediátrico":
             tipo_alim = st.radio("Tipo Alimentación", ["LME", "LA", "LM+LA", "COMPLEMENTARIA"], horizontal=True)
             obs_alim = st.text_area("Observaciones Alimentación")
             meds = st.text_area("Medicamentos / Suplementos")
@@ -128,7 +128,7 @@ with st.form("registro_maestro"):
         peso = c_ant1.text_input("Peso")
         talla = c_ant2.text_input("Talla")
         
-        if tipo_paciente == "Infantil / Adolescente":
+        if tipo_paciente == "Pediátrico":
             pc = c_ant3.text_input("Perímetro Craneano")
             pe = c_ant1.text_input("P/E")
             te = c_ant2.text_input("T/E")
@@ -155,7 +155,7 @@ if enviar:
                 "entrevista": entrevista, "peso": peso, "talla": talla, "ind": ind, "der": der
             }
             
-            if tipo_paciente == "Infantil / Adolescente":
+            if tipo_paciente == "Pediátrico":
                 datos.update({
                     "tipo_alim": tipo_alim, "obs_alim": obs_alim, "meds": meds, 
                     "examenes": examenes, "inst": inst, "pc": pc, "pe": pe, "te": te, "pt": pt, "diag": diag
