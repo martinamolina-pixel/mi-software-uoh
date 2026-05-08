@@ -88,7 +88,7 @@ def crear_pdf(datos):
     
     agregar_seccion("II. VALORACIÓN CLÍNICA", 
                    f"Alimentación: {datos['tipo_alim']}\nObservaciones: {datos['obs_alim']}\n"
-                   f"Medicamentos: {datos['meds']}\nExámenes/Vacunas: {datos['examenes']}\n"
+                   f"Medicamentos: {datos['meds']}\nExámenes/Vacunas/Radiografías: {datos['examenes']}\n"
                    f"Instrumentos: {datos['inst']}")
     
     agregar_seccion("III. ANTROPOMETRÍA Y DIAGNÓSTICO", 
@@ -118,7 +118,7 @@ with st.form("formulario_clinico_uoh"):
         tipo_alim = st.selectbox("Tipo de Alimentación", ["LME", "LA", "LM+LA", "Complementaria"])
         obs_alim = st.text_area("Observaciones Alimentación")
         meds = st.text_area("Medicamentos / Suplementos")
-        examenes = st.text_area("Vacunas / Exámenes")
+        examenes = st.text_area("Vacunas / Exámenes / Radiografías")
         inst = st.text_area("Instrumentos / Resultados")
 
     with tab3:
