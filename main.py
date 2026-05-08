@@ -85,7 +85,9 @@ def crear_pdf(datos):
     agregar_seccion("I. IDENTIFICACIÓN DEL PACIENTE", 
                    f"Nombre: {datos['nombre']}\nEdad: {datos['edad']}\nDomicilio: {datos['domicilio']}\n"
                    f"Responsable: {datos['interno']}\nFecha: {datetime.now().strftime('%d/%m/%Y')}")
-    
+
+    agregar_seccion("II. ANAMNESIS / ENTREVISTA", datos['entrevista'])
+
     agregar_seccion("II. VALORACIÓN CLÍNICA", 
                    f"Alimentación: {datos['tipo_alim']}\nObservaciones: {datos['obs_alim']}\n"
                    f"Medicamentos: {datos['meds']}\nExámenes/Vacunas: {datos['examenes']}\n"
@@ -105,7 +107,12 @@ def crear_pdf(datos):
 # --- INTERFAZ DE USUARIO ---
 with st.form("formulario_clinico_uoh"):
     # Segmentos organizados
-    tab1, tab2, tab3, tab4 = st.tabs(["👤 Identificación", "🩺 Clínica", "📊 Antropometría", "📝 Cierre"])
+# Agregamos "💬 Entrevista" en la lista de pestañas
+    tab1, tab_ent, tab2, tab3, tab4 = st.tabs(["👤 Identificación", "💬 Entrevista", "🩺 Clínica", "📊 Antropometría", "📝 Cierre"])
+
+    with tab_ent:
+        st.subheader("Entrevista / Anamnesis")
+        entrevista = st.text_area("Notas generales de la entrevista y motivo de consulta", height=200)
 
     with tab1:
         nombre = st.text_input("Nombre del Paciente")
@@ -141,6 +148,7 @@ if enviar:
         try:
             datos = {
                 "nombre": nombre, "edad": edad, "domicilio": domicilio, "interno": interno,
+                "entrevista": entrevista,
                 "tipo_alim": tipo_alim, "obs_alim": obs_alim, "meds": meds, "examenes": examenes,
                 "inst": inst, "peso": peso, "talla": talla, "pc": pc, "pe": pe, "te": te,
                 "pt": pt, "diag": diag, "ind": ind, "der": der
