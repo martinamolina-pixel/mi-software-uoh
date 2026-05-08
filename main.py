@@ -44,7 +44,7 @@ if os.path.exists(NOMBRE_LOGO):
 else:
     st.title("🏥 SISTEMA DE REGISTRO CLÍNICO")
 
-st.markdown("<h4 style='color: #64748b; margin-top:-20px;'>Escuela de Salud | Unidad de Internado</h4>", unsafe_allow_html=True)
+st.markdown("<h4 style='color: #64748b; margin-top:-20px;'> Registro Clínico Adulto | Internado APS - Evaluación </h4>", unsafe_allow_html=True)
 st.write("---")
 
 # --- CLASE PDF PROFESIONAL ---
