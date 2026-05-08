@@ -94,7 +94,7 @@ def crear_pdf(datos):
                    f"Instrumentos / Resultados: {datos['inst']}")
     
     agregar_seccion("III. ANTROPOMETRÍA Y DIAGNÓSTICO", 
-                   f"Peso: {datos['peso']} kg | Talla: {datos['talla']} cm | PC: {datos['pc']} cm\n"
+                   f"Peso: {datos['peso']} kg | Talla: {datos['talla']} cm | Perímetro Craneano: {datos['pc']} cm\n"
                    f"Indicadores: P/E: {datos['pe']} | T/E: {datos['te']} | P/T: {datos['pt']}\n"
                    f"Diagnóstico: {datos['diag']}")
     
@@ -130,7 +130,7 @@ with st.form("formulario_clinico_uoh"):
 
     with tab3:
         ca, cb, cc = st.columns(3)
-        peso, talla, pc = ca.text_input("Peso"), cb.text_input("Talla"), cc.text_input("PC")
+        peso, talla, pc = ca.text_input("Peso"), cb.text_input("Talla"), cc.text_input("Perímetro Craneano")
         pe, te, pt = ca.text_input("P/E"), cb.text_input("T/E"), cc.text_input("P/T")
         diag = st.text_area("Diagnóstico Nutricional")
 
