@@ -65,7 +65,7 @@ class ReporteClinico(FPDF):
         self.set_font('Arial', 'I', 8)
         self.set_text_color(100, 116, 139)
         self.line(10, 275, 200, 275)
-        self.cell(0, 10, 'Centro de Habilidades Clínicas y Disciplinares - UOH', 0, 0, 'L')
+        self.cell(0, 10, 'Centro de Habilidades Clínicas y Disciplinares - Escuela de Salud', 0, 0, 'L')
         self.cell(0, 10, f'Página {self.page_no()}', 0, 0, 'R')
 
 def crear_pdf(datos):
