@@ -23,7 +23,7 @@ if os.path.exists(NOMBRE_LOGO):
 else:
     st.title("🏥 Sistema de Registro Clínico UOH")
 
-st.markdown("### Registro Clinico | Internado APS - Evaluación")
+st.markdown("### Registro Clínico | Internado APS - Evaluación")
 
 # --- SELECTOR DE TIPO DE PACIENTE ---
 tipo_paciente = st.selectbox("Seleccione el tipo de Registro Clínico:", ["Infantil / Adolescente", "Adulto / Adulto Mayor"])
