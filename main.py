@@ -90,8 +90,8 @@ def crear_pdf(datos):
 
     agregar_seccion("II. VALORACIÓN CLÍNICA", 
                    f"Alimentación: {datos['tipo_alim']}\nObservaciones: {datos['obs_alim']}\n"
-                   f"Medicamentos: {datos['meds']}\nExámenes/Vacunas: {datos['examenes']}\n"
-                   f"Instrumentos: {datos['inst']}")
+                   f"Medicamentos: {datos['meds']}\nExámenes/ Vacunas / Radiografías: {datos['examenes']}\n"
+                   f"Instrumentos / Resultados: {datos['inst']}")
     
     agregar_seccion("III. ANTROPOMETRÍA Y DIAGNÓSTICO", 
                    f"Peso: {datos['peso']} kg | Talla: {datos['talla']} cm | PC: {datos['pc']} cm\n"
