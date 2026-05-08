@@ -160,7 +160,7 @@ if enviar:
             st.download_button(
                 label="📥 DESCARGAR FICHA EN PDF",
                 data=bytes(pdf_bytes),
-                file_name=f"Ficha_{nombre.replace(' ', '_')}.pdf",
+                file_name=f"Interno_{interno}_Paciente_{nombre}.pdf",
                 mime="application/pdf"
             )
         except Exception as e:
