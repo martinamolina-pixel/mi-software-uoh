@@ -77,6 +77,7 @@ with st.form("formulario_clinico"):
     with t1:
         nombre = st.text_input("Nombre del Paciente")
         edad = st.text_input("Edad")
+        domicilio = col_id2.text_input("Domicilio")
         interno = st.text_input("Interno(a) Responsable")
 
     with t_ent:
@@ -87,10 +88,6 @@ with st.form("formulario_clinico"):
             tipo_alim = st.selectbox("Alimentación", ["LME", "LA", "LM+LA", "Complementaria"])
             meds = st.text_area("Medicamentos / Vacunas")
             inst = st.text_area("Instrumentos (EEDP, TEPSI, etc.)")
-        else:
-            antecedentes = st.text_area("Antecedentes (HTA, DM2, DLP, etc.)")
-            meds = st.text_area("Fármacos en uso")
-            af = st.selectbox("Nivel Actividad Física", ["Sedentario", "Ligero", "Moderado", "Intenso"])
 
     with t3:
         col1, col2 = st.columns(2)
