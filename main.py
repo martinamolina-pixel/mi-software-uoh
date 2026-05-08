@@ -125,7 +125,6 @@ with st.form("registro_maestro"):
             examenes = st.text_area("Exámenes Relevantes")
 
     with t4:
-        st.subheader("Antropometría")
         c_ant1, c_ant2, c_ant3 = st.columns(3)
         peso = c_ant1.text_input("Peso")
         talla = c_ant2.text_input("Talla")
