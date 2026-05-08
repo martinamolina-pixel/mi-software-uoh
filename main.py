@@ -45,7 +45,7 @@ if os.path.exists(NOMBRE_LOGO):
 else:
     st.title("🏥 Sistema de Registro Clínico")
 
-st.markdown("### Registro Clínico Adulto | Internado APS - Evaluación Teórica")
+st.markdown("### Registro Clínico Adulto | Internado APS - Evaluación")
 st.write("---")
 
 # --- CLASE PARA EL PDF PROFESIONAL ---
