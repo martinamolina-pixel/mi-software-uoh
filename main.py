@@ -3,154 +3,136 @@ from fpdf import FPDF
 import os
 from datetime import datetime
 
-# 1. CONFIGURACIÓN DE PÁGINA
-st.set_page_config(page_title="Registro Clínico UOH", page_icon="🏥", layout="centered")
+# 1. CONFIGURACIÓN ESTÉTICA PROFESIONAL
+st.set_page_config(
+    page_title="Registro Clínico UOH",
+    page_icon="🏥",
+    layout="centered"
+)
 
-# Estilo visual institucional
+# Estilo CSS para colores institucionales y mejor legibilidad
 st.markdown("""
     <style>
+    .main { background-color: #f8fafc; }
+    h1 { color: #003366; font-family: 'Helvetica', sans-serif; }
+    .stTabs [data-baseweb="tab-list"] { gap: 8px; }
     .stTabs [data-baseweb="tab"] {
+        background-color: #f1f5f9;
+        border-radius: 4px 4px 0 0;
+        padding: 10px 15px;
         color: #003366;
-        font-weight: 600;
     }
     .stTabs [aria-selected="true"] {
         background-color: #003366 !important;
         color: white !important;
     }
+    .footer-uoh {
+        text-align: center;
+        color: #64748b;
+        font-size: 0.8rem;
+        border-top: 1px solid #e2e8f0;
+        padding-top: 20px;
+        margin-top: 50px;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-# --- CABECERA ---
-# Usamos el nombre exacto del archivo que tienes en tu GitHub
+# --- CABECERA E IDENTIDAD ---
 NOMBRE_LOGO = "UOH - EsSa Azul (1) (3) (1).png"
 
 if os.path.exists(NOMBRE_LOGO):
     st.image(NOMBRE_LOGO, width=400)
 else:
     st.title("🏥 Sistema de Registro Clínico")
-    st.write("Escuela de Salud - UOH")
 
+st.markdown("### Escuela de Salud | Internado APS")
 st.write("---")
 
-# --- CLASE PARA EL PDF ---
-class PDF(FPDF):
+# --- CLASE PARA EL PDF PROFESIONAL ---
+class ReporteClinico(FPDF):
     def header(self):
         if os.path.exists(NOMBRE_LOGO):
             self.image(NOMBRE_LOGO, 10, 8, 33)
-        self.set_font('Arial', 'B', 10)
-        self.set_text_color(0, 51, 102)
-        self.cell(0, 5, 'REGISTRO CLÍNICO', 0, 1, 'C')
-        self.set_font('Arial', '', 8)
-        self.cell(0, 5, 'EVALUACIÓN TEÓRICA PRÁCTICA FINAL DE LA ASIGNATURA', 0, 1, 'C')
-        self.cell(0, 5, 'INTERNADO APS', 0, 1, 'C')
-        self.ln(10)
+        self.set_font('Arial', 'B', 15)
+        self.set_text_color(0, 51, 102) # Azul UOH
+        self.cell(0, 10, 'FICHA DE ATENCIÓN CLÍNICA', 0, 1, 'R')
+        self.set_draw_color(0, 51, 102)
+        self.line(10, 25, 200, 25)
+        self.ln(12)
 
     def footer(self):
-        self.set_y(-15)
+        self.set_y(-20)
         self.set_font('Arial', 'I', 8)
-        self.cell(0, 10, f'Página {self.page_no()}', 0, 0, 'C')
+        self.set_text_color(100, 116, 139)
+        self.line(10, 275, 200, 275)
+        self.cell(0, 10, 'Centro de Habilidades Clínicas y Disciplinares - UOH', 0, 0, 'L')
+        self.cell(0, 10, f'Página {self.page_no()}', 0, 0, 'R')
 
-def generar_pdf(d):
-    pdf = PDF()
+def crear_pdf(datos):
+    pdf = ReporteClinico()
     pdf.add_page()
-    pdf.set_font("Arial", 'B', 9)
     
-    # Tabla de Identificación
-    pdf.set_fill_color(240, 240, 240)
-    def fila(label, valor):
-        pdf.set_font("Arial", 'B', 9)
-        pdf.cell(50, 7, label, 1, 0, 'L', fill=True)
-        pdf.set_font("Arial", '', 9)
-        pdf.cell(140, 7, str(valor), 1, 1, 'L')
-
-    fila("Nombre Paciente", d['nombre'])
-    fila("Edad", d['edad'])
-    fila("Domicilio", d['domicilio'])
-    fila("Nombre Interno Enfermería", d['interno'])
-    pdf.ln(5)
-
-    # Secciones de texto
-    def seccion(titulo, contenido):
-        pdf.set_font("Arial", 'B', 9)
-        pdf.set_fill_color(230, 235, 245)
-        pdf.cell(0, 7, titulo, 1, 1, 'L', fill=True)
-        pdf.set_font("Arial", '', 9)
+    def agregar_seccion(titulo, contenido):
+        pdf.set_font("Arial", 'B', 11)
+        pdf.set_fill_color(241, 245, 249)
+        pdf.set_text_color(0, 51, 102)
+        pdf.cell(0, 9, f" {titulo}", 1, 1, 'L', fill=True)
+        pdf.set_font("Arial", '', 10)
+        pdf.set_text_color(30, 41, 59)
         pdf.multi_cell(0, 7, str(contenido), 1)
-        pdf.ln(3)
+        pdf.ln(4)
 
-    seccion("ENTREVISTA", d['entrevista'])
+    agregar_seccion("I. IDENTIFICACIÓN DEL PACIENTE", 
+                   f"Nombre: {datos['nombre']}\nEdad: {datos['edad']}\nDomicilio: {datos['domicilio']}\n"
+                   f"Responsable: {datos['interno']}\nFecha: {datetime.now().strftime('%d/%m/%Y')}")
     
-    # Tabla Alimentación
-    pdf.set_font("Arial", 'B', 9)
-    pdf.cell(0, 7, "TIPO ALIMENTACIÓN", 1, 1, 'L', fill=True)
-    pdf.cell(47.5, 7, "LME", 1, 0, 'C')
-    pdf.cell(47.5, 7, "LA", 1, 0, 'C')
-    pdf.cell(47.5, 7, "LM+LA", 1, 0, 'C')
-    pdf.cell(47.5, 7, "COMPLEMENTARIA", 1, 1, 'C')
+    agregar_seccion("II. VALORACIÓN CLÍNICA", 
+                   f"Alimentación: {datos['tipo_alim']}\nObservaciones: {datos['obs_alim']}\n"
+                   f"Medicamentos: {datos['meds']}\nExámenes/Vacunas: {datos['examenes']}\n"
+                   f"Instrumentos: {datos['inst']}")
     
-    # Marcar opción elegida
-    pdf.cell(47.5, 7, "X" if d['tipo']=="LME" else "", 1, 0, 'C')
-    pdf.cell(47.5, 7, "X" if d['tipo']=="LA" else "", 1, 0, 'C')
-    pdf.cell(47.5, 7, "X" if d['tipo']=="LM+LA" else "", 1, 0, 'C')
-    pdf.cell(47.5, 7, "X" if d['tipo']=="Complementaria" else "", 1, 1, 'C')
+    agregar_seccion("III. ANTROPOMETRÍA Y DIAGNÓSTICO", 
+                   f"Peso: {datos['peso']} kg | Talla: {datos['talla']} cm | PC: {datos['pc']} cm\n"
+                   f"Indicadores: P/E: {datos['pe']} | T/E: {datos['te']} | P/T: {datos['pt']}\n"
+                   f"Diagnóstico: {datos['diag']}")
     
-    seccion("Observaciones Alimentación", d['obs_alim'])
-    seccion("MEDICAMENTOS/SUPLEMENTOS", d['meds'])
-    seccion("VACUNAS/ EXÁMENES /RADIOGRAFÍAS", d['examenes'])
-    seccion("INSTRUMENTOS/RESULTADOS (EEDP, Score, etc)", d['inst'])
+    agregar_seccion("IV. INDICACIONES Y CIERRE", 
+                   f"Acuerdos: {datos['ind']}\nDerivaciones: {datos['der']}")
     
-    # Antropometría
-    pdf.set_font("Arial", 'B', 9)
-    pdf.cell(0, 7, "ANTROPOMETRÍA", 1, 1, 'L', fill=True)
-    pdf.cell(63, 7, f"Peso: {d['peso']} kg", 1, 0)
-    pdf.cell(63, 7, f"Talla: {d['talla']} cm", 1, 0)
-    pdf.cell(64, 7, f"PC: {d['pc']} cm", 1, 1)
-    pdf.cell(63, 7, f"P/E: {d['pe']}", 1, 0)
-    pdf.cell(63, 7, f"T/E: {d['te']}", 1, 0)
-    pdf.cell(64, 7, f"P/T: {d['pt']}", 1, 1)
-    
-    seccion("Diagnóstico Nutricional", d['diag'])
-    seccion("ACUERDOS E INDICACIONES", d['ind'])
-    seccion("DERIVACIONES", d['der'])
-
+    # Retornar como bytes directamente para evitar errores de codificación
     return pdf.output(dest='S')
 
-# --- FORMULARIO STREAMLIT ---
-with st.form("ficha_uoh"):
-    t1, t2, t3, t4, t5 = st.tabs(["👤 ID", "💬 Entrevista", "🩺 Clínica", "📊 Antropo", "📝 Cierre"])
-    
-    with t1:
+# --- INTERFAZ DE USUARIO ---
+with st.form("formulario_clinico_uoh"):
+    # Segmentos organizados
+    tab1, tab2, tab3, tab4 = st.tabs(["👤 Identificación", "🩺 Clínica", "📊 Antropometría", "📝 Cierre"])
+
+    with tab1:
         nombre = st.text_input("Nombre del Paciente")
         c1, c2 = st.columns(2)
         edad = c1.text_input("Edad")
         domicilio = c2.text_input("Domicilio")
         interno = st.text_input("Interno(a) Responsable")
 
-    with t2:
-        entrevista = st.text_area("Entrevista / Notas Generales", height=200)
-
-    with t3:
-        tipo = st.selectbox("Tipo de Alimentación", ["LME", "LA", "LM+LA", "Complementaria"])
+    with tab2:
+        tipo_alim = st.selectbox("Tipo de Alimentación", ["LME", "LA", "LM+LA", "Complementaria"])
         obs_alim = st.text_area("Observaciones Alimentación")
         meds = st.text_area("Medicamentos / Suplementos")
         examenes = st.text_area("Vacunas / Exámenes")
-        inst = st.text_area("Instrumentos y Resultados (EEDP, Score, etc.)")
+        inst = st.text_area("Instrumentos / Resultados")
 
-    with t4:
-        c3, c4, c5 = st.columns(3)
-        peso = c3.text_input("Peso (kg)")
-        talla = c4.text_input("Talla (cm)")
-        pc = c5.text_input("PC (cm)")
-        pe = c3.text_input("P/E")
-        te = c4.text_input("T/E")
-        pt = c5.text_input("P/T")
+    with tab3:
+        ca, cb, cc = st.columns(3)
+        peso, talla, pc = ca.text_input("Peso"), cb.text_input("Talla"), cc.text_input("PC")
+        pe, te, pt = ca.text_input("P/E"), cb.text_input("T/E"), cc.text_input("P/T")
         diag = st.text_area("Diagnóstico Nutricional")
 
-    with t5:
+    with tab4:
         ind = st.text_area("Acuerdos e Indicaciones")
         der = st.text_area("Derivaciones")
 
-    enviar = st.form_submit_button("💾 GENERAR REGISTRO")
+    # Botón de envío corregido
+    enviar = st.form_submit_button("🚀 GENERAR REGISTRO CLÍNICO")
 
 if enviar:
     if not nombre:
@@ -159,18 +141,27 @@ if enviar:
         try:
             datos = {
                 "nombre": nombre, "edad": edad, "domicilio": domicilio, "interno": interno,
-                "entrevista": entrevista, "tipo": tipo, "obs_alim": obs_alim,
-                "meds": meds, "examenes": examenes, "inst": inst,
-                "peso": peso, "talla": talla, "pc": pc, "pe": pe, "te": te, "pt": pt,
-                "diag": diag, "ind": ind, "der": der
+                "tipo_alim": tipo_alim, "obs_alim": obs_alim, "meds": meds, "examenes": examenes,
+                "inst": inst, "peso": peso, "talla": talla, "pc": pc, "pe": pe, "te": te,
+                "pt": pt, "diag": diag, "ind": ind, "der": der
             }
-            pdf_out = generar_pdf(datos)
-            st.success("✅ ¡Ficha lista!")
+            
+            # Generar PDF y descargar
+            pdf_bytes = crear_pdf(datos)
+            st.success("✅ Registro generado exitosamente.")
             st.download_button(
-                label="📥 DESCARGAR PDF",
-                data=bytes(pdf_out),
-                file_name=f"Ficha_{nombre}.pdf",
+                label="📥 DESCARGAR FICHA EN PDF",
+                data=bytes(pdf_bytes),
+                file_name=f"Ficha_{nombre.replace(' ', '_')}.pdf",
                 mime="application/pdf"
             )
         except Exception as e:
-            st.error(f"Error al crear PDF: {e}")
+            st.error(f"Error al generar reporte: {e}")
+
+# PIE DE PÁGINA INSTITUCIONAL
+st.markdown("""
+    <div class="footer-uoh">
+        Sistema generado por el Centro de Habilidades Clínicas y Disciplinares<br>
+        <strong>Universidad de O'Higgins | Escuela de Salud</strong>
+    </div>
+    """, unsafe_allow_html=True)
