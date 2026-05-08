@@ -116,7 +116,6 @@ with st.form("registro_maestro"):
             examenes = st.text_area("Vacunas / Exámenes / Radiografías")
             inst = st.text_area("Instrumentos / Resultados")
         else:
-            st.subheader("Control de Signos Vitales")
             c_sv1, c_sv2 = st.columns(2)
             pa = c_sv1.text_input("PA")
             fc = c_sv2.text_input("FC")
